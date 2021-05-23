@@ -6,9 +6,11 @@ interface Props {
 }
 
 const Tile = (props : Props) => {
+    let cls = 'tile';
+    if (props.value === 0) cls += ' empty';
     return (
-        <div className='tile'>
-            {props.value}
+        <div className={cls}>
+            <span className='content'>{props.value}</span>
         </div>
     )
 }
