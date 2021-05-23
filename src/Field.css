@@ -1,0 +1,22 @@
+.tile {
+    display: inline-block;
+    width: 20%;
+    box-sizing: border-box;
+    border-style: solid;
+    margin: 16px;
+    background-color: white;
+    text-align: center;
+    /*line-height: 50%;*/
+}
+
+.tile:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.field {
+    display: block;
+    width: 50%;
+    background-color: orange;
+}
