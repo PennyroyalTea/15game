@@ -1,0 +1,2 @@
+.tile{justify-content:center;align-items:center;text-align:center;display:inline-block;width:128px;height:128px;box-sizing:border-box;border:2px solid #000;border-radius:5px;margin:16px;background-color:#8a2be2}.tile.empty{background-color:#fff}.tile>.content{position:relative;font-size:64px;top:15px;color:#fff}.field{display:block;width:640px;background-color:orange}
+/*# sourceMappingURL=main.af24e8d6.chunk.css.map */
