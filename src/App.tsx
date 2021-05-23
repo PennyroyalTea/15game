@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Field from './Field';
+import Page from './Page';
 
-function App() {
-  return (
-    <Field/>
-  );
+
+
+const App = () => {
+  return (<Page/>);
 }
 
 export default App;
