@@ -1,11 +1,12 @@
 import React from 'react';
+import 'antd/dist/antd.css';
 
-import Page from './Page';
-
+import Main from "./Main";
 
 
 const App = () => {
-  return (<Page/>);
+  // eslint-disable-next-line react/jsx-no-undef
+  return (<Main/>);
 }
 
 export default App;

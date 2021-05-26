@@ -1,7 +1,7 @@
 import React from 'react';
 
 import 'antd/dist/antd.css';
-import { Row, Col, Typography, Button, message } from 'antd';
+import { Space,  Row, Col, Typography, Button, message } from 'antd';
 
 import {permutateToWinnable} from './Util';
 
@@ -44,7 +44,8 @@ interface State {
     field: List<number>,
     clicksCnt: number
 }
-class Page extends React.Component<Props, State> {
+
+class Game extends React.Component<Props, State> {
     constructor(props : Props) {
         super(props);
         this.state = {
@@ -58,6 +59,11 @@ class Page extends React.Component<Props, State> {
 
     handleWin() {
         message.success(`Вы справились за ${this.state.clicksCnt} ${wordform[this.state.clicksCnt % 10]}!`);
+
+        let oldLB = JSON.parse(window.localStorage.getItem('leaderboard') || '[]')
+        oldLB.push({name: 'bo', steps: this.state.clicksCnt})
+        window.localStorage.setItem('leaderboard', JSON.stringify(oldLB));
+
         this.handleRestart();
     }
 
@@ -87,25 +93,22 @@ class Page extends React.Component<Props, State> {
     }
 
     render() {
-        return (<>
+        return (<Space direction='vertical'>
             <Row>
-                <Col span={4}>
+                <Col span={8}>
                     <Title level={4}>Кликов сделано: {this.state.clicksCnt} </Title>
                 </Col>
-                <Col span={4}>
-                    <Button onClick={this.handleRestart}>Начать сначала</Button>
+                <Col span={8}/>
+                <Col span={8}>
+                    <Button size='large' onClick={this.handleRestart}>Перемешать</Button>
                 </Col>
             </Row>
-            <Row>
-                <Col span={24}>
-                    <Field
-                        field = {this.state.field}
-                        handleTileClick = {this.handleTileClick}
-                    />
-                </Col>
-            </Row>
-        </>)
+            <Field
+                field = {this.state.field}
+                handleTileClick = {this.handleTileClick}
+            />
+        </Space>)
     }
 }
 
-export default Page;
+export default Game;
