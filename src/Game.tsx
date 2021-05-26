@@ -39,7 +39,9 @@ const isWin = (list: List<number>) : boolean => {
 
 const wordform = ['кликов', 'клик', 'клика', 'клика', 'клика', 'кликов', 'кликов', 'кликов', 'кликов', 'кликов'];
 
-interface Props {}
+interface Props {
+    user: string
+}
 interface State {
     field: List<number>,
     clicksCnt: number
@@ -61,7 +63,7 @@ class Game extends React.Component<Props, State> {
         message.success(`Вы справились за ${this.state.clicksCnt} ${wordform[this.state.clicksCnt % 10]}!`);
 
         let oldLB = JSON.parse(window.localStorage.getItem('leaderboard') || '[]')
-        oldLB.push({name: 'bo', steps: this.state.clicksCnt})
+        oldLB.push({name: this.props.user, steps: this.state.clicksCnt})
         window.localStorage.setItem('leaderboard', JSON.stringify(oldLB));
 
         this.handleRestart();
