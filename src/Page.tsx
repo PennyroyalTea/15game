@@ -3,10 +3,10 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import { Row, Col, Typography, Button, message } from 'antd';
 
+import {permutateToWinnable} from './Util';
 
 import {List} from 'immutable';
 import Field from './Field';
-import {useState} from "react";
 
 const {Title} = Typography;
 
@@ -18,7 +18,7 @@ interface Coord {
 const getxy = (ind : number) : Coord => {
     const x = ind % 4;
     const y = (ind - x) / 4;
-    return {'x': x, 'y': y};
+    return {x: x, y: y};
 }
 
 const adjacent = (a: Coord, b: Coord) : boolean => {
@@ -36,47 +36,76 @@ const swap = (list : List<number>, pos1 : number, pos2: number) : List<number> =
 const isWin = (list: List<number>) : boolean => {
     return list.every((val, id) => val === (id + 1) % 16);
 }
-const Page = () => {
-    const [field, setField] = useState(List([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15]));
-    const [clicksCnt, setClicksCnt] = useState(0);
 
-    const handleTileClick = (val: number) => {
+const wordform = ['кликов', 'клик', 'клика', 'клика', 'клика', 'кликов', 'кликов', 'кликов', 'кликов', 'кликов'];
+
+interface Props {}
+interface State {
+    field: List<number>,
+    clicksCnt: number
+}
+class Page extends React.Component<Props, State> {
+    constructor(props : Props) {
+        super(props);
+        this.state = {
+            field: List([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15]),
+            clicksCnt: 0
+        }
+
+        this.handleTileClick = this.handleTileClick.bind(this)
+        this.handleRestart = this.handleRestart.bind(this)
+    }
+
+    handleWin() {
+        message.success(`Вы справились за ${this.state.clicksCnt} ${wordform[this.state.clicksCnt % 10]}!`);
+        this.handleRestart();
+    }
+
+    handleTileClick (val: number) {
         if (val === 0) return;
-        const curTileCoord = getxy(field.indexOf(val));
-        const emptyTileCoord = getxy(field.indexOf(0));
+        const curTileCoord = getxy(this.state.field.indexOf(val));
+        const emptyTileCoord = getxy(this.state.field.indexOf(0));
         if (adjacent(curTileCoord, emptyTileCoord)) {
-            setField(swap(field, field.indexOf(val), field.indexOf(0)));
-            setClicksCnt(clicksCnt + 1);
+            const nextField = swap(this.state.field, this.state.field.indexOf(val), this.state.field.indexOf(0))
+            this.setState({
+                field: swap(this.state.field, this.state.field.indexOf(val), this.state.field.indexOf(0)),
+                clicksCnt: this.state.clicksCnt + 1
+            }, () => {
+                if (isWin(nextField)) {
+                    this.handleWin()
+                }
+            })
+
         }
     }
 
-    const handleRestart = () => {
-        setField(field.sortBy(Math.random));
-        setClicksCnt(0);
+    handleRestart () {
+        this.setState({
+            field: permutateToWinnable(this.state.field),
+            clicksCnt: 0
+        })
     }
 
-    if (isWin(field)) {
-        message.success(`Вы справились за ${clicksCnt} кликов!`);
-        handleRestart();
+    render() {
+        return (<>
+            <Row>
+                <Col span={4}>
+                    <Title level={4}>Кликов сделано: {this.state.clicksCnt} </Title>
+                </Col>
+                <Col span={4}>
+                    <Button onClick={this.handleRestart}>Начать сначала</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <Field
+                        field = {this.state.field}
+                        handleTileClick = {this.handleTileClick}
+                    />
+                </Col>
+            </Row>
+        </>)
     }
-
-    return (<>
-        <Row>
-            <Col span={4}>
-                <Title level={4}>Кликов сделано: {clicksCnt} </Title>
-            </Col>
-            <Col span={4}>
-                <Button onClick={handleRestart}>Начать сначала</Button>
-            </Col>
-        </Row>
-        <Row>
-            <Col span={24}>
-                <Field
-                    field = {field}
-                    handleTileClick = {handleTileClick}
-                />
-            </Col>
-        </Row>
-    </>)
 }
+
 export default Page;
